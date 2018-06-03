@@ -6,17 +6,16 @@ import org.decaywood.entity.trend.StockTrend;
 import org.decaywood.entity.trend.StockTrend.Period;
 import org.decaywood.entity.trend.StockTrend.TrendBlock;
 import org.decaywood.mapper.AbstractMapper;
+import org.decaywood.test.Stock_yyb;
 import org.decaywood.timeWaitingStrategy.TimeWaitingStrategy;
 import org.decaywood.utils.EmptyObject;
 import org.decaywood.utils.RequestParaBuilder;
 import org.decaywood.utils.URLMapper;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.lang.Thread;
 
 import org.jsoup.Jsoup;
@@ -90,12 +89,13 @@ public class StockCommentMapper extends AbstractMapper<Stock, Stock> {
                 .addParameter("hl", "0")
                 .addParameter("sort","time")
                 .addParameter("page",1);
-        System.out.println(builder_sum);
+
               
 
         URL url_sum = new URL(builder_sum.build());
         String json_sum = request(url_sum);
         JsonNode node_sum = mapper.readTree(json_sum);
+
         String total_count= node_sum.get("count").asText();
         int sum_count = Integer.parseInt(total_count);
         
@@ -145,7 +145,21 @@ public class StockCommentMapper extends AbstractMapper<Stock, Stock> {
 
        
     try{
-        Connection connection = DatabaseAccessor.Holder.ACCESSOR.getConnection();
+        //Connection connection = DatabaseAccessor.Holder.ACCESSOR.getConnection();
+        InputStream inStream = Stock_yyb.class.getClassLoader().getResourceAsStream("database.properties");
+        Properties prop = new Properties();
+        prop.load(inStream);
+        String database= prop.getProperty("database");
+        String user = prop.getProperty("user");
+        String password=prop.getProperty("password");
+
+
+        DatabaseAccessor da= new DatabaseAccessor("com.mysql.jdbc.Driver",
+                "jdbc:mysql://localhost:3306/"+database+"?useUnicode=true&characterEncoding=utf-8",
+                user,
+                password);
+        Connection connection=da.getConnection();
+
         StringBuilder builder = new StringBuilder();
          builder.append("insert IGNORE into stock_comment ")
                 .append("(stock_id,create_time,herf,comment) ")

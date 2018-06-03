@@ -18,10 +18,10 @@ public interface CookieProcessor {
         GlobalSystemConfigLoader.loadConfig();
 
         String areacode = System.getProperty("areaCode");
-        String userID = "15057155235";
-        String passwd = "zzx627546245";
-        //String userID=null;
-        //String passwd=null;
+        //String userID = "15057155235";
+        //String passwd = "zzx627546245";
+        String userID=null;
+        String passwd=null;
         //System.out.println(""+userID+":"+passwd);
         boolean rememberMe = Boolean.parseBoolean(System.getProperty("rememberMe"));
 
@@ -40,7 +40,7 @@ public interface CookieProcessor {
                     .filter(x -> x.contains("token=") || x.contains("s="))
                     .reduce("", String::concat);
                    
-            //String  cookie="xq_a_token=02a16c8dd2d87980d1b3ddced673bd6a74288bde; xq_r_token=024b1e233fea42dd2e0a74832bde2c914ed30e79;";   
+            // cookie="xq_a_token=02a16c8dd2d87980d1b3ddced673bd6a74288bde; xq_r_token=024b1e233fea42dd2e0a74832bde2c914ed30e79;";
             FileLoader.updateCookie(cookie, website);
             System.out.println(cookie);
             System.out.println(website);

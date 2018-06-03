@@ -1,5 +1,7 @@
 package org.decaywood.test;
 
+import java.io.*;
+import java.util.*;
 import org.decaywood.collector.StockScopeHotRankCollector;
 import org.decaywood.collector.StockSlectorBaseCollector;
 import org.decaywood.entity.Stock;
@@ -40,14 +42,24 @@ public class Stock_yyb {
   {
    try{
 
+       InputStream inStream = Stock_yyb.class.getClassLoader().getResourceAsStream("database.properties");
+       Properties prop = new Properties();
+       prop.load(inStream);
+       String database= prop.getProperty("database");
+       String user = prop.getProperty("user");
+       String password=prop.getProperty("password");
 
 
-//System.getProperties().setProperty("proxySet", "true");       
-//System.getProperties().setProperty("http.proxyHost", "222.71.93.150");  
-//System.getProperties().setProperty("http.proxyPort", "25954");
+       DatabaseAccessor da= new DatabaseAccessor("com.mysql.jdbc.Driver",
+               "jdbc:mysql://localhost:3306/"+database+"?useUnicode=true&characterEncoding=utf-8",
+               user,
+               password);
+       Connection connection=da.getConnection();
 
 
- Connection connection = DatabaseAccessor.Holder.ACCESSOR.getConnection();
+
+
+ //Connection connection = DatabaseAccessor.Holder.ACCESSOR.getConnection();
         
       try{
         List<String> ids= new ArrayList<String>();  
@@ -73,7 +85,7 @@ public class Stock_yyb {
         
         }
 
-        DatabaseAccessor.Holder.ACCESSOR.returnConnection(connection);
+        da.returnConnection(connection);
       
        int flag=0;
        for(String stock_id:ids)
